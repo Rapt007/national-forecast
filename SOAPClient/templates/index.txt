@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>National Weather Service</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
+    <script type=text/javascript>
+	  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	</script>
+    <script type = "text/javascript">
+         $(document).ready(function(){
+			$('#getdata').bind('click', function() {
+                var maxt = false;
+                var mint = false;
+                var dew = false;
+                var windh = false;
+			    if($('#maxt').prop("checked") == true){
+			        maxt = true;
+			    }
+			    if($('#mint').prop("checked") == true){
+			        mint = true;
+			    }
+			    if($('#dew').prop("checked") == true){
+			        dew = true;
+			    }
+			    if($('#windh').prop("checked") == true){
+			        windh = true;
+			    }
+
+              $.getJSON($SCRIPT_ROOT + '/getWeatherData', {
+                longitude: $('input[name="longitude"]').val(),
+                latitude: $('input[name="latitude"]').val(),
+                maxt: maxt,
+                mint: mint,
+                dew: dew,
+                windh: windh
+              }, function(data) {
+                   var i = ''
+                   for(d in data.result['maxt']){
+                    i = i + data.result['maxt'][d]+ ","
+                   }
+
+                    var j = ''
+                   for(d in data.result['mint']){
+                    j = j + data.result['mint'][d] + ","
+                   }
+
+                  $('#maxt_r').html(i)
+                  $('#mint_r').html(j)
+                  $('#dew_r').html(data.result['dew'])
+                  $('#waveh_r').html(data.result['waveh'])
+              });
+            });
+		 });
+    </script>
+</head>
+<body>
+
+    <table>
+        <tr>
+            <td width="50%" valign="top">
+                <table>
+                    <tr>
+                        <td>
+                            Longitude
+                        </td>
+                        <td>
+                            <input type="text" id="longitude" name="longitude"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Latitude
+                        </td>
+                        <td>
+                            <input type="text" id="latitude" name="latitude"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Max Temp
+                        </td>
+                        <td>
+                            <input type="checkbox" id="maxt" name="maxt"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Min Temp
+                        </td>
+                        <td>
+                            <input type="checkbox" id="mint" name="dew"  />
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            Dew
+                        </td>
+                        <td>
+                            <input type="checkbox" id="dew" name="dew"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Wind Speed
+                        </td>
+                        <td>
+                            <input type="checkbox" id="windh" name="windh"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button id="getdata" name="getdata">Submit</button>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+            <td width="50%" valign="top">
+                <table>
+                    <tr>
+                        <td>
+                            Maximum Temp
+                        </td>
+                        <td>
+                            <div id="maxt_r"></div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            Minimum Temp
+                        </td>
+                        <td>
+                             <div id="mint_r"></div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            Dew
+                        </td>
+                        <td>
+                             <div id="dew_r"></div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            Wave Height
+                        </td>
+                        <td>
+                             <div id="waveh_r"></div>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+
+    </table>
+
+</body>
+</html>
